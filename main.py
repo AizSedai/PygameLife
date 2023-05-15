@@ -18,9 +18,14 @@ def main():
     screen = pygame.display.set_mode((640, 480))
     pygame.display.set_caption('Game Of Life')
     clock = pygame.time.Clock()
-    while True:
+    is_running = True
+    while is_running:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                is_running = False
         screen.fill((0, 0, 0))
         pygame.display.flip()
+        clock.tick(60)
 
 
 if __name__ == '__main__':
