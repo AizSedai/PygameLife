@@ -24,11 +24,19 @@ def main():
     pygame.display.set_caption('Game Of Life')
     clock = pygame.time.Clock()
     is_running = True
+    is_paused = True
     while is_running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 is_running = False
-        gof.run_transition_rule()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE:
+                    if is_paused:
+                        is_paused = False
+                    else:
+                        is_paused = True
+        if not is_paused:
+            gof.run_transition_rule()
         screen.fill((0, 0, 0))
         render_pygame(gof.field, screen)
         pygame.display.flip()
