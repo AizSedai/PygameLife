@@ -2,15 +2,15 @@ import pygame
 from cellular_automata import *
 
 
-def render_field(field):
+def render_pygame(field, scr):
+    scale = 15
     for y in range(0, len(field)):
         for x in range(0, len(field[0])):
             if field[y][x] == 0:
-                print(' ', end='')
+                pygame.draw.rect(scr, (255, 255, 255), (x * scale, y * scale, scale, scale))
             elif field[y][x] == 1:
-                print('X', end='')
-        print()
-    print('-----------------------------')
+                pygame.draw.rect(scr, (0, 0, 255), (x * scale, y * scale, scale, scale))
+            pygame.draw.rect(scr, (0, 0, 0), (x * scale, y * scale, scale, scale), 2)
 
 
 def main():
