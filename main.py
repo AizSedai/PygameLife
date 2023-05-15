@@ -1,3 +1,4 @@
+import pygame
 from cellular_automata import *
 
 
@@ -13,11 +14,13 @@ def render_field(field):
 
 
 def main():
-    gof = GameOfLife(30, 30)
-    gof.initialize(30)
-    for i in range(30):
-        gof.run_transition_rule()
-        render_field(gof.field)
+    pygame.init()
+    screen = pygame.display.set_mode((640, 480))
+    pygame.display.set_caption('Game Of Life')
+    clock = pygame.time.Clock()
+    while True:
+        screen.fill((0, 0, 0))
+        pygame.display.flip()
 
 
 if __name__ == '__main__':
