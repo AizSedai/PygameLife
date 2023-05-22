@@ -37,6 +37,8 @@ def main():
                         is_paused = False
                     else:
                         is_paused = True
+                elif event.type == pygame.K_ESCAPE:
+                    is_running = False
             if event.type == pygame.MOUSEBUTTONDOWN:
                 cursor_pos = event.pos
                 x_pos = cursor_pos[0] // 15
