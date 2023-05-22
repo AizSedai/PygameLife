@@ -17,14 +17,16 @@ def main():
     width = int(input('Введите ширину поля: '))
     height = int(input('Введите длину поля: '))
     life_fraction = int(input('Введите долю живых клеток: '))
+    scale = int(input('Введите размер клеток при отрисовке: '))
     gof = GameOfLife(width, height)
     gof.initialize(life_fraction)
     pygame.init()
     pygame.font.init()
-    screen = pygame.display.set_mode((640, 480))
+    screen = pygame.display.set_mode((width * scale + 400, height * scale + 110))
     pygame.display.set_caption('Game Of Life')
     clock = pygame.time.Clock()
     main_font = pygame.font.Font(None, 24)
+    iteration_number = 0
     is_running = True
     is_paused = True
     while is_running:
@@ -39,6 +41,14 @@ def main():
                         is_paused = True
                 elif event.type == pygame.K_ESCAPE:
                     is_running = False
+                elif event.type == pygame.K_BACKSPACE:
+                    gof = GameOfLife(width, height)
+                    gof.initialize(life_fraction)
+                    pygame.init()
+                    pygame.font.init()
+                    screen = pygame.display.set_mode((width * scale + 400, height * scale + 110))
+                    iteration_number = 0
+                    is_paused = True
             if event.type == pygame.MOUSEBUTTONDOWN:
                 cursor_pos = event.pos
                 x_pos = cursor_pos[0] // 15
