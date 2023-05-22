@@ -35,6 +35,16 @@ def main():
                         is_paused = False
                     else:
                         is_paused = True
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                cursor_pos = event.pos
+                x_pos = cursor_pos[0] // 15
+                y_pos = cursor_pos[1] // 15
+                new_state = gof.field[y_pos][x_pos]
+                if event.button == 1:
+                    new_state = 1
+                elif event.button == 3:
+                    new_state = 0
+                gof.field[y_pos][x_pos] = new_state
         if not is_paused:
             gof.run_transition_rule()
         screen.fill((0, 0, 0))
