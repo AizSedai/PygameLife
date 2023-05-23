@@ -2,14 +2,13 @@ import pygame
 from cellular_automata import *
 
 
-def render_pygame(field, scr):
-    scale = 15
+def render_pygame(field, scr, scale, color_alive, color_dead):
     for y in range(0, len(field)):
         for x in range(0, len(field[0])):
             if field[y][x] == 0:
-                pygame.draw.rect(scr, (255, 255, 255), (x * scale, y * scale, scale, scale))
+                pygame.draw.rect(scr, color_dead, (x * scale, y * scale, scale, scale))
             elif field[y][x] == 1:
-                pygame.draw.rect(scr, (0, 0, 255), (x * scale, y * scale, scale, scale))
+                pygame.draw.rect(scr, color_alive, (x * scale, y * scale, scale, scale))
             pygame.draw.rect(scr, (0, 0, 0), (x * scale, y * scale, scale, scale), 2)
 
 
@@ -30,6 +29,16 @@ def main():
     height = int(input('Введите длину поля: '))
     life_fraction = int(input('Введите долю живых клеток: '))
     scale = int(input('Введите размер клеток при рисовке: '))
+
+    dict_alive_colors = {'blue': (0, 0, 255), 'red': (255, 0, 0), 'green': (0, 255, 0)}
+    dict_dead_colors = {'white': (255, 255, 255), 'violet': (255, 0, 255), 'yellow': (255, 255, 0)}
+    list_alive_colors = ['blue', 'red', 'green']
+    list_dead_colors = ['white', 'violet', 'yellow']
+    current_alive_color_name = 'blue'
+    current_dead_color_name = 'white'
+    curr_color_alive = dict_alive_colors[current_alive_color_name]
+    curr_color_dead = dict_dead_colors[current_dead_color_name]
+
     gof = GameOfLife(width, height)
     gof.initialize(life_fraction)
     pygame.init()
@@ -68,6 +77,15 @@ def main():
                         is_iteration_mode = True
                     else:
                         is_iteration_mode = False
+                elif event.key == pygame.K_LEFT:
+                    new_color_index = (list_alive_colors.index(current_alive_color_name) + 1) % len(list_alive_colors)
+                    current_alive_color_name = list_alive_colors[new_color_index]
+                    curr_color_alive = dict_alive_colors[list_alive_colors[new_color_index]]
+                elif event.key == pygame.K_RIGHT:
+                    new_color_index = (list_dead_colors.index(current_dead_color_name) + 1) % len(list_dead_colors)
+                    current_dead_color_name = list_dead_colors[new_color_index]
+                    curr_color_dead = dict_dead_colors[list_dead_colors[new_color_index]]
+
                 elif event.key == pygame.K_DOWN:
                     if is_iteration_mode:
                         do_iteration = True
@@ -92,9 +110,42 @@ def main():
             iteration_number += 1
             gof.run_transition_rule()
             screen.fill((0, 0, 0))
-            render_pygame(gof.field, screen)
-            text1 = main_font.render('I love python', True, (255, 255, 255))
-            screen.blit(text1, (10, 610))
+            render_pygame(gof.field, screen, scale, curr_color_alive, curr_color_dead)
+            number_alive_cells, number_dead_cells = count_alive_and_dead_cells(gof.field)
+            text_field_size = main_font.render(f'Filed size is {width} by {height} cells', True, (255, 255, 255))
+            text_count_life = main_font.render(f'Number of alive cells: {number_alive_cells}', True, (255, 255, 255))
+            text_count_dead = main_font.render(f'Number of dead cells: {number_dead_cells}', True, (255, 255, 255))
+            text_square_size = main_font.render(f'Count of dead cells: {scale}', True, (255, 255, 255))
+            text_alive_color = main_font.render(f'Color of alive cells: {current_alive_color_name}', True,
+                                                (255, 255, 255))
+            text_dead_color = main_font.render(f'Color of dead cells:  {current_dead_color_name}', True,
+                                               (255, 255, 255))
+            text_iteration_number = main_font.render(f'Number of iteration: {iteration_number}', True, (255, 255, 255))
+
+            text_title_key = main_font.render(f'KEYBOARD CONTROLS:', True, (255, 255, 255))
+            text_exit = main_font.render(f'Exit program: \'ESC\'', True, (255, 255, 255))
+            text_pause = main_font.render(f'Pause program: \'SPACE\'', True, (255, 255, 255))
+            text_iter_mode = main_font.render(f'Iter mode: \'ENTER\'', True, (255, 255, 255))
+            text_iter_action = main_font.render(f'Iter action: \'ARROW_DOWN\'', True, (255, 255, 255))
+            text_alive_color_mode = main_font.render(f'Change alive cells color: \'ARROW_LEFT\'', True, (255, 255, 255))
+            text_dead_color_mode = main_font.render(f'Change dead cells color: \'ARROW_RIGHT\'', True, (255, 255, 255))
+
+            screen.blit(text_field_size, (10, 610))
+            screen.blit(text_count_life, (10, 635))
+            screen.blit(text_count_dead, (10, 660))
+            screen.blit(text_square_size, (10, 685))
+            screen.blit(text_alive_color, (350, 610))
+            screen.blit(text_dead_color, (350, 635))
+            screen.blit(text_iteration_number, (350, 660))
+
+            screen.blit(text_title_key, (610, 10))
+            screen.blit(text_exit, (610, 35))
+            screen.blit(text_pause, (610, 60))
+            screen.blit(text_iter_mode, (610, 85))
+            screen.blit(text_iter_action, (610, 110))
+            screen.blit(text_alive_color_mode, (610, 135))
+            screen.blit(text_dead_color_mode, (610, 160))
+
             pygame.display.flip()
             clock.tick(60)
             pygame.time.delay(200)
