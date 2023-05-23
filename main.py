@@ -13,6 +13,18 @@ def render_pygame(field, scr):
             pygame.draw.rect(scr, (0, 0, 0), (x * scale, y * scale, scale, scale), 2)
 
 
+def count_alive_and_dead_cells(field):
+    number_alive_cells = 0
+    width = len(field[0])
+    height = len(field)
+    for y in range(0, height):
+        for x in range(0, width):
+            if field[y][x] == 1:
+                number_alive_cells += 1
+    number_dead_cells = height * width - number_alive_cells
+    return number_alive_cells, number_dead_cells
+
+
 def main():
     width = int(input('Введите ширину поля: '))
     height = int(input('Введите длину поля: '))
